@@ -3,20 +3,27 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var authRouter = require('./routes/auth');
-var vendorsRouter = require('./routes/vendors');
-var notificationsRouter = require('./routes/notifications');
-var servicesRouter = require('./routes/services');
-var bookingsRouter = require('./routes/bookings');
-var paymentsRouter = require('./routes/payments');
-var payoutsRouter = require('./routes/payouts');
-var reviewsRouter = require('./routes/reviews');
-var adminAuditLogsRouter = require('./routes/adminAuditLogs');
 
 var app = express();
+
+// Enable CORS for all routes with custom options
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Handle preflight OPTIONS requests globally
+app.options('*', cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -25,20 +32,10 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/auth', authRouter);
-app.use('/vendors', vendorsRouter);
-app.use('/notifications', notificationsRouter);
-app.use('/services', servicesRouter);
-app.use('/bookings', bookingsRouter);
-app.use('/payments', paymentsRouter);
-app.use('/payouts', payoutsRouter);
-app.use('/reviews', reviewsRouter);
-app.use('/admin-audit-logs', adminAuditLogsRouter);
+app.use('/api', indexRouter);
 
 // Sequelize DB connection check, model registration, and schema sync
 try {

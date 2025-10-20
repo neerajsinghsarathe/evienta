@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "start:dev": "nodemon ./bin/www",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -13,7 +14,9 @@
     "joi": "^18.0.1",
     "morgan": "~1.9.1",
     "mysql2": "^3.15.2",
+    "nodemon": "^3.1.10",
     "pug": "2.0.0-beta11",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "cors": "^2.8.5"
   }
 }
