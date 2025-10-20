@@ -1,0 +1,26 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('./sequelize');
+
+const Notification = sequelize.define('Notification', {
+  user_id: {
+    type: DataTypes.INTEGER, // or DataTypes.UUID
+    allowNull: false,
+    references: { model: 'Users', key: 'id' }
+  },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  payload: {
+    type: DataTypes.JSON
+  },
+  read: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
+}, {
+  timestamps: true,
+  tableName: 'Notifications'
+});
+
+module.exports = Notification;
