@@ -6,7 +6,7 @@ import { apiService } from '../services/api';
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string, role: 'user' | 'provider' | 'admin') => Promise<void>;
+  register: (email: string, password: string, name: string, role: 'customer' | 'vendor' | 'admin') => Promise<void>;
   logout: () => void;
   loading: boolean;
   updateUser: (userData: Partial<User>) => void;
@@ -14,7 +14,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -24,26 +24,28 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check for existing session on app load
-    const initializeAuth = async () => {
-      const token = localStorage.getItem('evienta_token');
-      if (token) {
-        try {
-          const response = await apiService.getCurrentUser();
-          setUser(response.user);
-        } catch (error) {
-          localStorage.removeItem('evienta_token');
-        }
-      }
-      setLoading(false);
-    };
+  // useEffect(() => {
+  //   // Check for existing session on app load
+  //   const initializeAuth = async () => {
+  //     const token = localStorage.getItem('evienta_token');
+  //     if (token) {
+  //       try {
+  //         if(user===null){
+  //           const userData = await apiService.getCurrentUser();
+  //           setUser(userData);
+  //         }
+  //       } catch (error) {
+  //         localStorage.removeItem('evienta_token');
+  //       }
+  //     }
+  //     setLoading(false);
+  //   };
 
-    initializeAuth();
-  }, []);
+  //   initializeAuth();
+  // }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
@@ -51,14 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await apiService.login(email, password);
       localStorage.setItem('evienta_token', response.token);
       setUser(response.user);
-      // Role-based navigation
-      if (response.user.role === 'admin') {
-        navigate('/dashboard/admin');
-      } else if (response.user.role === 'provider') {
-        navigate('/dashboard/provider');
-      } else {
-        navigate('/dashboard/user');
-      }
+      navigate('/profile');
     } catch (error) {
       throw error;
     } finally {
@@ -66,20 +61,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (email: string, password: string, name: string, role: 'user' | 'provider' | 'admin') => {
+  const register = async (email: string, password: string, name: string, role: 'customer' | 'vendor' | 'admin') => {
     setLoading(true);
     try {
       const response = await apiService.register({ email, password, name, role });
-      localStorage.setItem('evienta_token', response.token);
+      //localStorage.setItem('evienta_token', response.token);
       setUser(response.user);
       // Role-based navigation
-      if (response.user.role === 'admin') {
-        navigate('/dashboard/admin');
-      } else if (response.user.role === 'provider') {
-        navigate('/dashboard/provider');
-      } else {
-        navigate('/dashboard/user');
-      }
+      navigate('/login');
+      // if (response.user.role === 'customer') {
+      //   navigate('/dashboard/user');
+      // } else if (response.user.role === 'vendor') {
+      //   navigate('/dashboard/vendor');
+      // } else {
+      //   navigate('/dashboard/admin');
+      // }
     } catch (error) {
       console.log("Registration Error:", error);
       throw error;

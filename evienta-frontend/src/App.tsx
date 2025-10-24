@@ -13,6 +13,7 @@ import VenueDetailsPage from './pages/VenueDetailsPage';
 import TestCrudPage from './pages/TestCrudPage';
 import FeatureTestPage from './pages/FeatureTestPage';
 import ApiDocsPage from './pages/ApiDocsPage';
+import ProfilePage from './components/common/ProfileSection';
 
 const App: React.FC = () => {
   return (
@@ -23,8 +24,9 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/dashboard/user" element={<UserDashboard />} />
-          <Route path="/dashboard/provider" element={<ProviderDashboard />} />
+          <Route path="/profile" element={<ProfilePage/>}/>
+          <Route path="/dashboard/customer" element={<UserDashboard />} />
+          <Route path="/dashboard/vendor" element={<ProviderDashboard />} />
           <Route path="/dashboard/admin" element={<AdminDashboard />} />
           <Route path="/venue/:id" element={<VenueDetailsPage />} />
           <Route path="/test-crud" element={<TestCrudPage />} />

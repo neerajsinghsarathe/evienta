@@ -80,8 +80,8 @@ class ApiService {
     return this.request('/auth/me');
   }
 
-  async updateProfile(profileData: any) {
-    return this.request('/auth/profile', {
+  async updateProfile(id: string,profileData: any) {
+    return this.request(`/users/${id}`, {
       method: 'PUT',
       body: JSON.stringify(profileData)
     });

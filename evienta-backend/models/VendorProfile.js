@@ -8,7 +8,7 @@ const VendorProfile = sequelize.define('VendorProfile', {
     references: { model: 'Users', key: 'id' }
   },
   business_name: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
     allowNull: false
   },
   description: {

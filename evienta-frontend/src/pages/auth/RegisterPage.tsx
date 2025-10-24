@@ -9,7 +9,7 @@ const RegisterPage: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'user' as 'user' | 'provider' | 'admin'
+    role: 'Customer' as 'Customer' | 'Vendor' | 'Admin'
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,7 +29,8 @@ const RegisterPage: React.FC = () => {
       return;
     }
     try {
-      await register(formData.email, formData.password, formData.name, formData.role);
+      // map UI role to backend role
+      await register(formData.email, formData.password, formData.name, formData.role.toLowerCase() as 'customer' | 'vendor' | 'admin');
     } catch (err) {
       setError('Registration failed. Please try again.');
     }
@@ -115,9 +116,9 @@ const RegisterPage: React.FC = () => {
                 onChange={handleInputChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               >
-                <option value="user">User</option>
-                <option value="provider">Provider</option>
-                <option value="admin">Admin</option>
+                <option value="Customer">Customer</option>
+                <option value="Vendor">Vendor</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
             <div>
@@ -143,7 +144,7 @@ const RegisterPage: React.FC = () => {
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
-                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                {!formData.password && (<Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />)}
               </div>
             </div>
             <div>
@@ -169,7 +170,7 @@ const RegisterPage: React.FC = () => {
                 >
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
-                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+               {!formData.confirmPassword && (<Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />)}
               </div>
             </div>
             <div className="flex items-center">

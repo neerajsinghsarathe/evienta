@@ -2,7 +2,8 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'user' | 'provider' | 'admin';
+  role: 'customer' | 'vendor' | 'admin';
+  address?: string;
   phone?: string;
   avatar?: string;
   created_at: string;

@@ -92,7 +92,7 @@ const LoginPage: React.FC = () => {
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
-                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                {!password && (<Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />)}
               </div>
             </div>
 

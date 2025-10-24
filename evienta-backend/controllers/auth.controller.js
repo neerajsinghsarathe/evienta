@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = 'your_secret_key';
 
 exports.register = async (req, res, next) => {
   try {
@@ -31,8 +33,13 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // No JWT/session configured; return minimal success response
-    res.json({ message: 'Login successful', user });
+     const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      SECRET_KEY,
+      { expiresIn: '1h' } // token expires in 1 hour
+    );
+
+    res.json({ message: 'Login successful', user , token });
   } catch (err) {
     next(err);
   }
