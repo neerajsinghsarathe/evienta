@@ -27,25 +27,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // Check for existing session on app load
-  //   const initializeAuth = async () => {
-  //     const token = localStorage.getItem('evienta_token');
-  //     if (token) {
-  //       try {
-  //         if(user===null){
-  //           const userData = await apiService.getCurrentUser();
-  //           setUser(userData);
-  //         }
-  //       } catch (error) {
-  //         localStorage.removeItem('evienta_token');
-  //       }
-  //     }
-  //     setLoading(false);
-  //   };
+  useEffect(() => {
+    // Check for existing session on app load
+    const initializeAuth = async () => {
+      const token = localStorage.getItem('evienta_token');
+      if (token) {
+        try {
+          if(user===null){
+            const userData = await apiService.getCurrentUser();
+            setUser(userData);
+          }
+        } catch (error) {
+          localStorage.removeItem('evienta_token');
+        }
+      }
+      setLoading(false);
+    };
 
-  //   initializeAuth();
-  // }, []);
+    initializeAuth();
+  }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);

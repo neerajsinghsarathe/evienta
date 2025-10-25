@@ -48,3 +48,13 @@ module.exports.listUsers = async (req, res, next) => {
     next(err);
   }
 };
+
+module.exports.getUserProfile = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const users = await userService.getUserById(id);
+        res.json(users);
+    } catch (e) {
+        next(e);
+    }
+}
