@@ -8,7 +8,7 @@ router.post('/', userValidator.createUser, userController.createUser);
 router.get('/', userController.listUsers);
 router.get('/profile', auth, userController.getUserProfile);
 router.get('/:id', userController.getUser);
-router.put('/:id', userValidator.updateUser,userController.updateUser);
+router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

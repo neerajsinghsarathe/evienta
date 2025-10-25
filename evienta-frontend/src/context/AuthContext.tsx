@@ -47,6 +47,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initializeAuth();
   }, []);
 
+  if(loading){
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {

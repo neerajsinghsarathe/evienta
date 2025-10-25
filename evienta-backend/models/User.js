@@ -2,6 +2,11 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('./sequelize');
 
 const User = sequelize.define('User', {
+  id:{
+    type: DataTypes.INTEGER, // or DataTypes.UUID if using UUIDs
+    allowNull: false,
+    primaryKey:true
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -32,9 +37,6 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('active', 'suspended'),
     defaultValue: 'active'
   },
-  meta: {
-    type: DataTypes.JSON
-  }
 }, {
   timestamps: true,
   tableName: 'Users'
