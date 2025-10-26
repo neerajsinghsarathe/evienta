@@ -1,8 +1,8 @@
 const Joi = require('joi');
 
 exports.createVendorProfile = (req, res, next) => {
-  const schema = Joi.object({
-    user_id: Joi.string().required(),
+  const orgSchema = Joi.object({
+    user_id: Joi.number().integer().required(),
     business_name: Joi.string().required(),
     description: Joi.string().optional(),
     address: Joi.object().optional(),
@@ -13,6 +13,9 @@ exports.createVendorProfile = (req, res, next) => {
     categories: Joi.array().items(Joi.string()).optional(),
     services: Joi.array().items(Joi.object()).optional(),
   });
+  const schema = Joi.object({
+  organizations: Joi.array().items(orgSchema)
+});
   const { error } = schema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
   next();

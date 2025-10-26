@@ -14,9 +14,6 @@ const VendorProfile = sequelize.define('VendorProfile', {
   description: {
     type: DataTypes.TEXT
   },
-  address: {
-    type: DataTypes.JSON
-  },
   city: {
     type: DataTypes.STRING
   },

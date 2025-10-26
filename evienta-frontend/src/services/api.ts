@@ -87,6 +87,20 @@ class ApiService {
     });
   }
 
+  async createVendorProfile(vendorData: any) {
+    return this.request('/vendors', {
+      method: 'POST',
+      body: JSON.stringify(vendorData)
+    });
+  }
+
+  async updateVendorProfile(id: string, profileData: any) {
+    return this.request(`/vendors/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(profileData)
+    });
+  }
+
   async changePassword(currentPassword: string, newPassword: string) {
     return this.request('/auth/change-password', {
       method: 'PUT',
