@@ -40,6 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch (error) {
           localStorage.removeItem('evienta_token');
         }
+      } else {
+        setUser(null);
+        navigate('/login');
       }
       setLoading(false);
     };
