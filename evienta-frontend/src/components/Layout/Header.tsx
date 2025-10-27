@@ -28,8 +28,8 @@ const Header: React.FC<HeaderProps> = ({ onSearchSubmit }) => {
     switch (user?.role) {
       case 'admin':
         return '/admin';
-      case 'provider':
-        return '/provider';
+      case 'vendor':
+        return '/dashboard/vendor';
       default:
         return '/dashboard';
     }
@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ onSearchSubmit }) => {
                   <a href={getDashboardPath()} className="text-gray-700 hover:text-blue-600 transition-colors">
                     Dashboard
                   </a>
-                  {user.role === 'user' && (
+                  {user.role === 'customer' && (
                     <>
                       <a href="/bookings" className="text-gray-700 hover:text-blue-600 transition-colors">
                         My Bookings
@@ -105,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({ onSearchSubmit }) => {
                       </a>
                     </>
                   )}
-                  {user.role === 'provider' && (
+                  {user.role === 'vendor' && (
                     <a href="/provider/bookings" className="text-gray-700 hover:text-blue-600 transition-colors">
                       Bookings
                     </a>
@@ -152,7 +152,7 @@ const Header: React.FC<HeaderProps> = ({ onSearchSubmit }) => {
                       <a href="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
                         Profile Settings
                       </a>
-                      {user.role === 'user' && (
+                      {user.role === 'customer' && (
                         <a href="/loyalty" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
                           Loyalty Points ({user.loyalty_points})
                         </a>
@@ -243,7 +243,7 @@ const Header: React.FC<HeaderProps> = ({ onSearchSubmit }) => {
                   <a href={getDashboardPath()} className="block py-2 text-gray-700 hover:text-blue-600">
                     Dashboard
                   </a>
-                  {user.role === 'user' && (
+                  {user.role === 'customer' && (
                     <>
                       <a href="/bookings" className="block py-2 text-gray-700 hover:text-blue-600">
                         My Bookings

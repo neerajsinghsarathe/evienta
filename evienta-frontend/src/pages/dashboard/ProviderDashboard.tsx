@@ -1,37 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Calendar, DollarSign, Star, Users, Plus, Edit, Eye, MessageCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { apiService } from '../../services/api';
 import { Booking, ServiceProvider } from '../../types';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { Country, State, City } from 'country-state-city';
 
 const ProviderDashboard: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'profile' | 'analytics'>('overview');
-  
+
   // State for data
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [providerProfile, setProviderProfile] = useState<ServiceProvider | null>(null);
   const [analytics, setAnalytics] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadDashboardData();
+    //loadDashboardData();
   }, []);
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [bookingsRes, profileRes, analyticsRes] = await Promise.all([
-        apiService.getProviderBookings({ limit: 10 }),
-        apiService.getProviderProfile(),
-        apiService.getProviderAnalytics()
-      ]);
+      // const [bookingsRes, profileRes, analyticsRes] = await Promise.all([
+      //   apiService.getProviderBookings({ limit: 10 }),
+      //   apiService.getProviderProfile(),
+      //   apiService.getProviderAnalytics()
+      // ]);
 
-      setBookings(bookingsRes.bookings || []);
-      setProviderProfile(profileRes.provider);
-      setAnalytics(analyticsRes);
+      // setBookings(bookingsRes.bookings || []);
+      // setProviderProfile(profileRes.provider);
+      // setAnalytics(analyticsRes);
     } catch (err) {
       setError('Failed to load dashboard data');
       console.error('Provider dashboard error:', err);
@@ -97,7 +98,7 @@ const ProviderDashboard: React.FC = () => {
           </div>
           <p className="text-xs text-green-600 mt-2">+12% from last month</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
@@ -108,7 +109,7 @@ const ProviderDashboard: React.FC = () => {
           </div>
           <p className="text-xs text-green-600 mt-2">+8% from last month</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
@@ -119,7 +120,7 @@ const ProviderDashboard: React.FC = () => {
           </div>
           <p className="text-xs text-gray-600 mt-2">{providerProfile?.reviews_count || 0} reviews</p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
@@ -328,13 +329,13 @@ const ProviderDashboard: React.FC = () => {
                 <div className="flex space-x-2">
                   {booking.status === 'pending' && (
                     <>
-                      <button 
+                      <button
                         onClick={() => handleBookingStatusUpdate(booking.id, 'confirmed')}
                         className="bg-emerald-600 text-white px-3 py-1 rounded text-sm hover:bg-emerald-700 transition-colors"
                       >
                         Accept
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleBookingStatusUpdate(booking.id, 'cancelled', 'Provider declined')}
                         className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors"
                       >
@@ -356,139 +357,542 @@ const ProviderDashboard: React.FC = () => {
       )}
     </div>
   );
+  const SERVICE_OPTIONS = [
+    "Function halls", "Banquet halls", "Meeting halls", "Ball rooms", "Cattering services", "Dj services",
+    "Band", "Choreography", "Farm houses", "Singers group", "Anchors", "Decoraters", "Makeup artist",
+    "Dress designer", "Gift designer", "Pub party booking", "Event managers", "Artists", "Tent house",
+    "Poojarii", "Drivers", "Car renters", "Security", "Photography", "Staycation", "Destination wedding places booking",
+    "Office party places booking", "Extra curricular activities", "Booking golf",
+  ];
 
-  const renderProfile = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Business Profile</h2>
-      
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <LoadingSpinner size="lg" />
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
-                  <input
-                    type="text"
-                    value={providerProfile?.business_name || ''}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Business Type</label>
-                  <select 
-                    value={providerProfile?.business_type || ''}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                  >
-                    <option value="catering">Catering</option>
-                    <option value="photography">Photography</option>
-                    <option value="music">DJ/Music</option>
-                    <option value="decoration">Decoration</option>
-                    <option value="venue">Venue</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                  <input
-                    type="text"
-                    value={providerProfile?.location || ''}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                  <input
-                    type="tel"
-                    value={providerProfile?.phone || ''}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Description</h3>
-              <textarea
-                rows={6}
-                value={providerProfile?.description || ''}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              />
-              
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 mt-6">Services Offered</h3>
-              <div className="space-y-2">
-                {(providerProfile?.services || []).map((service, index) => (
-                  <div key={index} className="flex items-center space-x-2">
+  type PricingPackage = {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+  };
+
+  const RenderProfile: React.FC = () => {
+    const [businesses, setBusinesses] = useState<any>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCountry, setSelectedCountry] = useState("");
+    const [selectedState, setSelectedState] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+
+    const countries = Country.getAllCountries();
+    const states = selectedCountry ? State.getStatesOfCountry(selectedCountry) : [];
+    const cities = selectedState ? City.getCitiesOfState(selectedCountry, selectedState) : [];
+    const { user } = useAuth();
+
+    const [formState, setFormState] = useState<any>({
+      business_name: "",
+      phone: "",
+      city: "",
+      state: "",
+      country: "",
+      description: "",
+      services: [],
+      images: [],
+      imagePreviews: [],
+      pricing_packages: []
+    });
+    const [serviceSearch, setServiceSearch] = useState("");
+    const [showOtherInput, setShowOtherInput] = useState(false);
+    const [otherService, setOtherService] = useState("");
+    const [imageError, setImageError] = useState("");
+
+    // Handlers for form state
+    const handleFieldChange = (name: string, value: any) => {
+      setFormState((prev: any) => ({
+        ...prev,
+        [name]: value,
+      }));
+    };
+    const handleServiceCheck = (service: string, checked: boolean) => {
+      setFormState((prev: any) => ({
+        ...prev,
+        services: checked
+          ? [...prev.services, service]
+          : prev.services.filter((s: any) => s !== service),
+      }));
+    };
+    const handleRemoveService = (service: string) => {
+      setFormState((prev: any) => ({
+        ...prev,
+        services: prev.services.filter((s: any) => s !== service),
+      }));
+    };
+    const filteredServices = SERVICE_OPTIONS.filter(
+      (opt) =>
+        opt.toLowerCase().includes(serviceSearch.toLowerCase()) &&
+        !formState.services?.includes(opt)
+    );
+
+    // Add pricing package logic
+    const handleAddPackage = () => {
+      setFormState((prev: any) => ({
+        ...prev,
+        pricing_packages: [
+          ...prev.pricing_packages,
+          { id: Date.now(), name: "", description: "", price: 0 },
+        ],
+      }));
+    };
+
+    const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files ? Array.from(e.target.files) : [];
+      if (formState.images.length + files.length > 8) {
+        setImageError("Maximum 8 images allowed.");
+        return;
+      }
+      setImageError("");
+
+      // Generate base64 preview for each file
+      Promise.all(
+        files.map(
+          (file) =>
+            new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.readAsDataURL(file);
+            })
+        )
+      ).then((previews) => {
+        setFormState((prev: any) => ({
+          ...prev,
+          images: [...prev.images, ...files],
+          imagePreviews: [...prev.imagePreviews, ...previews],
+        }));
+      });
+    };
+
+    const handleRemoveImage = (idx: number) => {
+      setFormState((prev: any) => ({
+        ...prev,
+        images: prev.images.filter((_: any, i: number) => i !== idx),
+        imagePreviews: prev.imagePreviews.filter((_: any, i: number) => i !== idx),
+      }));
+    };
+
+    const handlePackageChange = (index: number, key: keyof PricingPackage, value: any) => {
+      setFormState((prev: any) => {
+        const pkgs = [...prev.pricing_packages];
+        pkgs[index] = { ...pkgs[index], [key]: value };
+        return { ...prev, pricing_packages: pkgs };
+      });
+    };
+
+    // Handle "Add Business" submit
+    const handleSubmit = async (e: any) => {
+      e.preventDefault();
+      if (!formState.images || formState.images.length < 3) {
+        setImageError("Please upload at least 3 images");
+        return;
+      }
+
+      // Convert File objects to base64 strings (returns an array)
+      const imagesAsBase64 = await Promise.all(
+        (formState.images || []).map(
+          (file: any) =>
+            new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.readAsDataURL(file);
+            })
+        )
+      );
+
+      // Inline: copy all keys/values from formState, overwrite images, and omit imagePreviews
+      const payload = {
+        ...formState,
+        images: imagesAsBase64
+      };
+      delete payload.imagePreviews;
+
+      // Now send the same object shape as your state but with images as base64 strings, and no imagePreviews
+      await fetch('/api/vendor-profiles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // ...reset form, UI etc
+    };
+
+
+    // Modal UI
+    const BusinessModal = (
+      <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
+        <div className="bg-white p-12 rounded-xl shadow-2xl w-full max-w-4xl h-[40rem] overflow-y-auto relative">
+          <button
+            type="button"
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl"
+            onClick={() => setIsModalOpen(false)}
+          >
+            &times;
+          </button>
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">Add Business</h2>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
                     <input
                       type="text"
-                      value={service}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      value={formState.business_name}
+                      onChange={e => handleFieldChange("business_name", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
                     />
-                    <button className="text-red-600 hover:text-red-700">Remove</button>
                   </div>
-                ))}
-                <button className="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
-                  + Add Service
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                    <select
+                      value={selectedCountry}
+                      onChange={e => {
+                        setSelectedCountry(e.target.value);
+                        setSelectedState(""); // Reset state when country changes
+                        setSelectedCity("");  // Reset city when country changes
+                        handleFieldChange("country", countries.find(c => c.isoCode === e.target.value)?.name || "");
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    >
+                      <option value="">Select Country</option>
+                      {countries.map(country => (
+                        <option key={country.isoCode} value={country.isoCode}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* State Dropdown */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                    <select
+                      value={selectedState}
+                      onChange={e => {
+                        setSelectedState(e.target.value);
+                        setSelectedCity(""); // Reset city when state changes
+                        handleFieldChange("state", states.find(s => s.isoCode === e.target.value)?.name || "");
+                      }}
+                      disabled={!selectedCountry}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-100"
+                    >
+                      <option value="">Select State</option>
+                      {states.map(state => (
+                        <option key={state.isoCode} value={state.isoCode}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* City Dropdown */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                    <select
+                      value={selectedCity}
+                      onChange={e => {
+                        setSelectedCity(e.target.value);
+                        handleFieldChange("city", cities.find(c => c.name === e.target.value)?.name || "");
+                      }}
+                      disabled={!selectedState}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-100"
+                    >
+                      <option value="">Select City</option>
+                      {cities.map(city => (
+                        <option key={city.name} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <input
+                      type="tel"
+                      value={formState.phone}
+                      onChange={e => handleFieldChange("phone", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    />
+                  </div>
+                  {/* Services Offered Multi-select */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Services Offered</label>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {formState.services?.map((service: any) => (
+                        <span
+                          key={service}
+                          className="flex items-center bg-emerald-100 rounded px-2 py-1 text-emerald-700 text-sm"
+                        >
+                          {service}
+                          <button
+                            type="button"
+                            className="ml-2 text-red-600 hover:text-red-800"
+                            onClick={() => handleRemoveService(service)}
+                          >
+                            &times;
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                    <input
+                      type="text"
+                      value={serviceSearch}
+                      onChange={e => setServiceSearch(e.target.value)}
+                      className="w-full mb-2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      placeholder="Type to search services..."
+                    />
+                    <div className="max-h-40 overflow-y-auto border rounded">
+                      {filteredServices.map(service => (
+                        <label
+                          key={service}
+                          className="flex items-center py-1 px-3 hover:bg-emerald-50 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formState.services?.includes(service)}
+                            onChange={e => handleServiceCheck(service, e.target.checked)}
+                            className="mr-2"
+                          />
+                          {service}
+                        </label>
+                      ))}
+                      <label className="flex items-center py-1 px-3 hover:bg-emerald-50 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={showOtherInput}
+                          onChange={e => setShowOtherInput(e.target.checked)}
+                          className="mr-2"
+                        />
+                        Other
+                      </label>
+                      {/* Show textbox if "Other" checked */}
+                      {showOtherInput && (
+                        <div className="flex mt-2 space-x-2 p-2">
+                          <input
+                            value={otherService}
+                            onChange={e => setOtherService(e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                            placeholder="Enter your service"
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                if (
+                                  otherService.trim() &&
+                                  !formState.services.includes(otherService.trim())
+                                ) {
+                                  handleServiceCheck(otherService.trim(), true);
+                                  setOtherService("");
+                                }
+                              }
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="bg-emerald-600 text-white rounded px-3"
+                            onClick={() => {
+                              if (
+                                otherService.trim() &&
+                                !formState.services.includes(otherService.trim())
+                              ) {
+                                handleServiceCheck(otherService.trim(), true);
+                                setOtherService("");
+                              }
+                            }}
+                          >
+                            Add
+                          </button>
+                        </div>
+                      )}
+                      {filteredServices.length === 0 && (
+                        <div className="px-3 py-2 text-gray-400 text-sm">
+                          No matching services
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Description</h3>
+                <textarea
+                  rows={6}
+                  value={formState.description}
+                  onChange={e => handleFieldChange("description", e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Photos</h3>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Business Images (min 3 required)
+                  </label>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="mb-3"
+                  />
+                  {imageError && <div className="text-red-500 text-sm mb-2">{imageError}</div>}
+
+                  {/* Image previews with hover tooltips */}
+                  <div className="flex flex-wrap gap-3">
+                    {formState.imagePreviews?.map((url: string, idx: number) => (
+                      <div key={idx} className="relative w-28 h-28 border rounded group">
+                        <img
+                          src={url}
+                          alt={`Business preview ${idx + 1}`}
+                          className="w-28 h-28 object-cover rounded"
+                          title={formState.images[idx]?.name || `Image ${idx + 1}`} // Tooltip on hover
+                        />
+                        {/* Hover overlay with filename */}
+                        <div className="absolute inset-0 bg-black bg-opacity-60 text-white text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center text-center break-words">
+                          {formState.images[idx]?.name || `Image ${idx + 1}`}
+                        </div>
+                        {/* Remove button */}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(idx)}
+                          className="absolute top-0 right-0 bg-white bg-opacity-80 hover:bg-red-100 text-red-600 rounded-full p-1 m-1"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Allowed: up to 8 images. Only image files supported. Hover over images to see filenames.
+                  </p>
+                </div>
+
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 mt-6">Pricing Packages</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {formState.pricing_packages?.map((pkg: any, index: number) => (
+                    <div key={pkg.id ?? index} className="border border-gray-300 rounded-lg p-4">
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          value={pkg.name}
+                          placeholder="Package Name"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          onChange={e => handlePackageChange(index, "name", e.target.value)}
+                        />
+                        <textarea
+                          value={pkg.description}
+                          placeholder="Package Description"
+                          rows={2}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          onChange={e => handlePackageChange(index, "description", e.target.value)}
+                        />
+                        <input
+                          type="number"
+                          value={pkg.price}
+                          placeholder="Price per person"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          onChange={e =>
+                            handlePackageChange(index, "price", Number(e.target.value))
+                          }
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  className="mt-4 text-emerald-600 hover:text-emerald-700 text-sm font-medium"
+                  type="button"
+                  onClick={handleAddPackage}
+                >
+                  + Add Package
                 </button>
               </div>
             </div>
+            <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors" type="submit">
+                Save Business
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <h1 className="text-3xl font-bold mb-8 text-emerald-700">Vendor Businesses</h1>
+        {businesses.length === 0 ? (
+          <div className="flex flex-col items-center p-12 bg-white rounded-lg border border-gray-100 shadow-md">
+            <div className="mb-2 text-lg text-gray-500 font-semibold">No businesses found.</div>
+            <button
+              className="px-5 py-3 mt-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+              onClick={() => setIsModalOpen(true)}
+            >
+              + Add Business
+            </button>
           </div>
-          
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Pricing Packages</h3>
+        ) : (
+          <div>
+            <div className="flex justify-end mb-4">
+              <button
+                className="px-5 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+                onClick={() => setIsModalOpen(true)}
+              >
+                + Add Business
+              </button>
+            </div>
             <div className="grid md:grid-cols-2 gap-6">
-              {(providerProfile?.pricing_packages || []).map((pkg, index) => (
-                <div key={pkg.id} className="border border-gray-300 rounded-lg p-4">
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      value={pkg.name}
-                      placeholder="Package Name"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    />
-                    <textarea
-                      value={pkg.description}
-                      placeholder="Package Description"
-                      rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    />
-                    <input
-                      type="number"
-                      value={pkg.price}
-                      placeholder="Price per person"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    />
+              {businesses.map((biz: any, idx: number) => (
+                <div key={idx} className="bg-white border border-gray-200 rounded-xl shadow px-6 py-4">
+                  <div className="font-bold text-xl mb-2">{biz.business_name}</div>
+                  <div className="text-gray-600 mb-1">{biz.phone}</div>
+                  <div className="text-gray-800 mb-2">{biz.description}</div>
+                  <div className="mb-3">
+                    {biz.services.map((s: string) => (
+                      <span key={s} className="inline-block px-2 py-1 bg-emerald-100 text-emerald-700 rounded m-1 text-xs">{s}</span>
+                    ))}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap gap-3 mt-2">
+                      {biz.imagePreviews.map((url: string, i: number) => (
+                        <img
+                          key={i}
+                          src={url}
+                          alt="Preview"
+                          className="w-16 h-16 rounded object-cover"
+                        />
+                      ))}
+                    </div>
+                    {biz.pricing_packages.map((p: any) => (
+                      <div key={p.id} className="mb-2 pl-2 border-l-4 border-emerald-400">
+                        <span className="font-semibold">{p.name}</span>{" "}
+                        <span className="text-sm text-gray-600">- {p.description}</span>{" "}
+                        <span className="text-emerald-600 font-bold">₹{p.price}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
-            <button className="mt-4 text-emerald-600 hover:text-emerald-700 text-sm font-medium">
-              + Add Package
-            </button>
           </div>
-          
-          <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end space-x-3">
-            <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-              Cancel
-            </button>
-            <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-              Save Changes
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
+        )}
+        {isModalOpen && BusinessModal}
+      </div>
+    );
+  };
   const renderAnalytics = () => (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Analytics & Insights</h2>
-      
+
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Booking Trends</h3>
@@ -504,7 +908,7 @@ const ProviderDashboard: React.FC = () => {
             <div className="text-sm text-green-600">+33% increase</div>
           </div>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue</h3>
           <div className="space-y-3">
@@ -519,7 +923,7 @@ const ProviderDashboard: React.FC = () => {
             <div className="text-sm text-green-600">+30% increase</div>
           </div>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Customer Satisfaction</h3>
           <div className="space-y-3">
@@ -569,11 +973,10 @@ const ProviderDashboard: React.FC = () => {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab.key
-                    ? 'border-emerald-500 text-emerald-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === tab.key
+                  ? 'border-emerald-500 text-emerald-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 {tab.label}
               </button>
@@ -584,7 +987,7 @@ const ProviderDashboard: React.FC = () => {
         {/* Tab Content */}
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'bookings' && renderBookings()}
-        {activeTab === 'profile' && renderProfile()}
+        {activeTab === 'profile' && <RenderProfile />}
         {activeTab === 'analytics' && renderAnalytics()}
       </div>
     </div>

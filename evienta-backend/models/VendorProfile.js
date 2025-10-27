@@ -26,10 +26,6 @@ const VendorProfile = sequelize.define('VendorProfile', {
   geo: {
     type: DataTypes.JSON // { lat, lng }
   },
-  categories: {
-    // MySQL does not support ARRAY type; store as JSON array
-    type: DataTypes.JSON
-  },
   services: {
     // MySQL does not support ARRAY(JSON); store as JSON array
     type: DataTypes.JSON
