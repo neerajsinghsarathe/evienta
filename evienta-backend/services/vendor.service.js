@@ -13,4 +13,8 @@ module.exports = {
   async listVendors(filter = {}) {
     return await VendorProfile.findAll({ where: filter });
   },
+  async bulkCreateVendors(organizations) {
+    return await VendorProfile.bulkCreate(organizations);
+  }
+
 };

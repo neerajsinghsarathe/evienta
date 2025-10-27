@@ -1,8 +1,13 @@
 const vendorService = require('../services/vendor.service');
 
-exports.createVendorProfile = async (payload) => {
-  const { organizations } = payload;
-  return await VendorProfile.bulkCreate(organizations);
+exports.createVendorProfile = async (req, res, next) => {
+  try {
+    const { organizations } = req.body;
+    const result = await vendorService.bulkCreateVendors(organizations);
+    return res.status(201).send(result);
+  } catch (e) {
+    next(e);
+  }
 };
 
 
