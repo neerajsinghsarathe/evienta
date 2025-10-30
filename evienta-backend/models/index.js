@@ -6,13 +6,6 @@
 
 const Sequelize = require('sequelize');
 
-// Example: environment variables (adjust to your setup)
-const dialect = process.env.DB_DIALECT || 'mysql';
-const database = process.env.DB_NAME || 'evienta';
-const username = process.env.DB_USER || 'user';
-const password = process.env.DB_PASS || 'pass';
-const host = process.env.DB_HOST || '127.0.0.1';
-const logging = process.env.DB_LOGGING === 'true';
 
 // Use a shared Sequelize instance to avoid circular dependencies
 const sequelize = require('./sequelize');
@@ -28,11 +21,14 @@ db.Review = require('./Review');
 db.AdminAuditLog = require('./AdminAuditLog');
 db.Payout = require('./Payout');
 db.Notification = require('./Notification');
+db.Package = require('./Package');
+db.Media = require('./Media');
 
 // Associations
 // User
 // User hasMany VendorProfile, Booking, Review, Notification, AdminAuditLog
-// VendorProfile belongsTo User, hasMany Service, AvailabilitySlot, Booking, Review, Payout
+// VendorProfile belongsTo User, hasMany Service, AvailabilitySlot, Booking, Review, Payout, Media, Package
+// AvailabilitySlot belongsTo VendorProfile
 // Service belongsTo VendorProfile, hasMany Booking
 // Booking belongsTo User (customer), VendorProfile, Service, Payment, Review
 // Payment belongsTo Booking
@@ -79,6 +75,13 @@ db.AdminAuditLog.belongsTo(db.User, { foreignKey: 'admin_id' });
 
 db.User.hasMany(db.Notification, { foreignKey: 'user_id' });
 db.Notification.belongsTo(db.User, { foreignKey: 'user_id' });
+
+db.VendorProfile.hasMany(db.Media, { foreignKey: 'vendor_id' });
+db.Media.belongsTo(db.VendorProfile, { foreignKey: 'vendor_id' });
+
+db.VendorProfile.hasMany(db.Package, { foreignKey: 'vendor_id' });
+db.Package.belongsTo(db.VendorProfile, { foreignKey: 'vendor_id' });
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

@@ -510,7 +510,7 @@ const ProviderDashboard: React.FC = () => {
       delete payload.imagePreviews;
 
       // Now send the same object shape as your state but with images as base64 strings, and no imagePreviews
-      await fetch('/api/vendor-profiles', {
+      await fetch('/api/vendors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

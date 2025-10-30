@@ -2,6 +2,17 @@ const vendorService = require('../services/vendor.service');
 
 exports.createVendorProfile = async (req, res, next) => {
   try {
+    const organization = req.body;
+    organization.user_id = req.user.id; // Associate vendor profile with authenticated user
+    const result = await vendorService.createVendorProfile(organization);
+    return res.status(201).send(result);
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.bulkCreateVendorProfiles = async (req, res, next) => {
+  try {
     const { organizations } = req.body;
     const result = await vendorService.bulkCreateVendors(organizations);
     return res.status(201).send(result);
