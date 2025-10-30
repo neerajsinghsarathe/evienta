@@ -5,6 +5,7 @@ import { apiService } from '../../services/api';
 import { Booking, ServiceProvider } from '../../types';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { Country, State, City } from 'country-state-city';
+import BusinessCard from '../../components/BusinessCard';
 
 const ProviderDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -17,22 +18,11 @@ const ProviderDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    //loadDashboardData();
-  }, []);
+
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      // const [bookingsRes, profileRes, analyticsRes] = await Promise.all([
-      //   apiService.getProviderBookings({ limit: 10 }),
-      //   apiService.getProviderProfile(),
-      //   apiService.getProviderAnalytics()
-      // ]);
-
-      // setBookings(bookingsRes.bookings || []);
-      // setProviderProfile(profileRes.provider);
-      // setAnalytics(analyticsRes);
     } catch (err) {
       setError('Failed to load dashboard data');
       console.error('Provider dashboard error:', err);
@@ -373,7 +363,27 @@ const ProviderDashboard: React.FC = () => {
   };
 
   const RenderProfile: React.FC = () => {
-    const [businesses, setBusinesses] = useState<any>([]);
+    const mockBusinesses = [
+      {
+        business_name: "Cafe Emerald",
+        phone: "9876543210",
+        country: "India",
+        state: "Telangana",
+        city: "Hyderabad",
+        description: "A cozy cafe serving specialty coffee and fresh bakes in the heart of Hyderabad. Come enjoy our warm hospitality and aromatic brews.",
+        services: ["Coffee", "Snacks", "Free WiFi", "Outdoor Seating"],
+        images: [
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+          "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
+        ],
+        pricing_packages: [
+          { id: 1, name: "Breakfast Combo", description: "Coffee + Croissant", price: 180 },
+          { id: 2, name: "Lunch Special", description: "Pasta + Drink", price: 300 }
+        ]
+      },
+      // Add more mock businesses as needed
+    ];
+    const [businesses, setBusinesses] = useState<any>(mockBusinesses);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedState, setSelectedState] = useState("");
@@ -851,36 +861,8 @@ const ProviderDashboard: React.FC = () => {
               </button>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
-              {businesses.map((biz: any, idx: number) => (
-                <div key={idx} className="bg-white border border-gray-200 rounded-xl shadow px-6 py-4">
-                  <div className="font-bold text-xl mb-2">{biz.business_name}</div>
-                  <div className="text-gray-600 mb-1">{biz.phone}</div>
-                  <div className="text-gray-800 mb-2">{biz.description}</div>
-                  <div className="mb-3">
-                    {biz.services.map((s: string) => (
-                      <span key={s} className="inline-block px-2 py-1 bg-emerald-100 text-emerald-700 rounded m-1 text-xs">{s}</span>
-                    ))}
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap gap-3 mt-2">
-                      {biz.imagePreviews.map((url: string, i: number) => (
-                        <img
-                          key={i}
-                          src={url}
-                          alt="Preview"
-                          className="w-16 h-16 rounded object-cover"
-                        />
-                      ))}
-                    </div>
-                    {biz.pricing_packages.map((p: any) => (
-                      <div key={p.id} className="mb-2 pl-2 border-l-4 border-emerald-400">
-                        <span className="font-semibold">{p.name}</span>{" "}
-                        <span className="text-sm text-gray-600">- {p.description}</span>{" "}
-                        <span className="text-emerald-600 font-bold">₹{p.price}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {businesses.map((biz:any, idx:number) => (
+                <BusinessCard key={idx} business={biz} onEdit={()=>{setIsModalOpen(true)}} onDelete={()=>true} />
               ))}
             </div>
           </div>
