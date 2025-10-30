@@ -1,8 +1,25 @@
-const VendorProfile = require('../models/VendorProfile');
+const { VendorProfile, Media, Package } = require('../models');
+const db = require('../models');
 
 module.exports = {
   async createVendorProfile(data) {
-    return await VendorProfile.create(data);
+    const transaction = await db.sequelize.transaction();
+    try {
+      const vendor = await VendorProfile.create(data, { transaction });
+      await Package.bulkCreate(data.pricing_packages || [], { transaction });
+      const mediaFiles = data.images.map(image => ({
+        vendor_id: vendor.id,
+        url: image,
+        type: 'image',
+        description: ''
+      }));
+      await Media.bulkCreate(mediaFiles || [], { transaction });
+      await transaction.commit();
+      return vendor;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   },
   async getVendorById(id) {
     return await VendorProfile.findByPk(id);
@@ -16,5 +33,4 @@ module.exports = {
   async bulkCreateVendors(organizations) {
     return await VendorProfile.bulkCreate(organizations);
   }
-
 };
