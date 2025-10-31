@@ -500,32 +500,15 @@ const ProviderDashboard: React.FC = () => {
         return;
       }
 
-      // Convert File objects to base64 strings (returns an array)
-      const imagesAsBase64 = await Promise.all(
-        (formState.images || []).map(
-          (file: any) =>
-            new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onload = () => resolve(reader.result);
-              reader.readAsDataURL(file);
-            })
-        )
-      );
-
       // Inline: copy all keys/values from formState, overwrite images, and omit imagePreviews
       const payload = {
         ...formState,
-        images: imagesAsBase64
+        images: formState.images
       };
       delete payload.imagePreviews;
 
       // Now send the same object shape as your state but with images as base64 strings, and no imagePreviews
-      await fetch('/api/vendors', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
+      await apiService.createVendorProfile(payload);
       // ...reset form, UI etc
     };
 

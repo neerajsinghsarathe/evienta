@@ -51,3 +51,12 @@ exports.listVendors = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.uploadImagesForVendor = async (req, res, next) => {
+  try {
+    const files = req.files;
+    res.json(files);
+  } catch (err) {
+    next(err);
+  }
+};

@@ -90,7 +90,7 @@ class ApiService {
   async createVendorProfile(vendorData: any) {
     return this.request('/vendors', {
       method: 'POST',
-      body: JSON.stringify(vendorData)
+      body: vendorData
     });
   }
 
