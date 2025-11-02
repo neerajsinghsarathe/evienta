@@ -444,7 +444,7 @@ const ProviderDashboard: React.FC = () => {
         ...prev,
         pricing_packages: [
           ...prev.pricing_packages,
-          { id: Date.now(), name: "", description: "", price: 0 },
+          { id: 0, name: "", description: "", price: 0 },
         ],
       }));
     };

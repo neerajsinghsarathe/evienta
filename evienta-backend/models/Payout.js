@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const Payout = sequelize.define('Payout', {
   vendor_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'VendorProfiles', key: 'id' }
+    allowNull: false
   },
   amount: {
     type: DataTypes.FLOAT,

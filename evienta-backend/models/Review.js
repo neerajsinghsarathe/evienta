@@ -4,18 +4,15 @@ const sequelize = require('./sequelize');
 const Review = sequelize.define('Review', {
   booking_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'Bookings', key: 'id' }
+    allowNull: false
   },
   customer_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'Users', key: 'id' }
+    allowNull: false
   },
   vendor_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'VendorProfiles', key: 'id' }
+    allowNull: false
   },
   rating: {
     type: DataTypes.INTEGER,

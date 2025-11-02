@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const Service = sequelize.define('Service', {
   vendor_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'VendorProfiles', key: 'id' }
+    allowNull: false
   },
   title: {
     type: DataTypes.STRING,

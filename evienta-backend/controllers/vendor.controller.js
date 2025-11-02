@@ -7,6 +7,7 @@ exports.createVendorProfile = async (req, res, next) => {
     const result = await vendorService.createVendorProfile(organization);
     return res.status(201).send(result);
   } catch (e) {
+    console.log(e);
     next(e);
   }
 };
@@ -17,6 +18,7 @@ exports.bulkCreateVendorProfiles = async (req, res, next) => {
     const result = await vendorService.bulkCreateVendors(organizations);
     return res.status(201).send(result);
   } catch (e) {
+    console.log(e);
     next(e);
   }
 };
@@ -39,6 +41,7 @@ exports.updateVendor = async (req, res, next) => {
     const vendor = await vendorService.getVendorById(req.params.id);
     res.json(vendor);
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
@@ -48,6 +51,7 @@ exports.listVendors = async (req, res, next) => {
     const vendors = await vendorService.listVendors(req.query);
     res.json(vendors);
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
@@ -57,6 +61,7 @@ exports.uploadImagesForVendor = async (req, res, next) => {
     const files = req.files;
     res.json(files);
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };

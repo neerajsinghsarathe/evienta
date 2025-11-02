@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const Package = sequelize.define('Package', {
   vendor_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'VendorProfiles', key: 'id' }
+    allowNull: false
   },
   name: {
     type: DataTypes.STRING,
@@ -20,7 +19,7 @@ const Package = sequelize.define('Package', {
   },
   duration_minutes: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   features: {
     type: DataTypes.JSON // Store package features as a JSON array

@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const AdminAuditLog = sequelize.define('AdminAuditLog', {
   admin_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'Users', key: 'id' }
+    allowNull: false
   },
   action: {
     type: DataTypes.STRING,

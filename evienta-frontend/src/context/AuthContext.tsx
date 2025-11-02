@@ -29,6 +29,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Check for existing session on app load
+    const path = window.location.pathname;
+    if (path === '/login' || path === '/register') {
+      return;
+    }
+    setLoading(true);
     const initializeAuth = async () => {
       const token = localStorage.getItem('evienta_token');
       if (token) {
@@ -44,10 +49,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
         navigate('/login');
       }
-      setLoading(false);
     };
 
-    initializeAuth();
+    initializeAuth().then(() => setLoading(false));
   }, []);
 
   if(loading){

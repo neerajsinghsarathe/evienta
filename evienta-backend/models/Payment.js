@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const Payment = sequelize.define('Payment', {
   booking_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'Bookings', key: 'id' }
+    allowNull: false
   },
   amount: {
     type: DataTypes.FLOAT,

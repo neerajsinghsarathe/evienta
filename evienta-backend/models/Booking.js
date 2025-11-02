@@ -4,18 +4,15 @@ const sequelize = require('./sequelize');
 const Booking = sequelize.define('Booking', {
   customer_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'Users', key: 'id' }
+    allowNull: false
   },
   vendor_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'VendorProfiles', key: 'id' }
+    allowNull: false
   },
   service_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'Services', key: 'id' }
+    allowNull: false
   },
   start_datetime: {
     type: DataTypes.DATE,
@@ -42,8 +39,7 @@ const Booking = sequelize.define('Booking', {
     defaultValue: 'pending'
   },
   payment_id: {
-    type: DataTypes.INTEGER, // or DataTypes.UUID
-    references: { model: 'Payments', key: 'id' }
+    type: DataTypes.INTEGER // or DataTypes.UUID
   },
   notes: {
     type: DataTypes.TEXT

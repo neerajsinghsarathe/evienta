@@ -6,14 +6,15 @@ module.exports = {
     const transaction = await db.sequelize.transaction();
     try {
       const vendor = await VendorProfile.create(data, { transaction });
-      await Package.bulkCreate(data.pricing_packages || [], { transaction });
-      const mediaFiles = data.images.map(image => ({
-        vendor_id: vendor.id,
-        url: image,
-        type: 'image',
-        description: ''
-      }));
-      await Media.bulkCreate(mediaFiles || [], { transaction });
+      const pricing_packages = data.pricing_packages.map(_package => ({ ..._package, vendor_id: vendor.id }));
+      await Package.bulkCreate(pricing_packages || [], { transaction });
+      // const mediaFiles = data.images.map(image => ({
+      //   vendor_id: vendor.id,
+      //   url: image,
+      //   type: 'image',
+      //   description: ''
+      // }));
+      // await Media.bulkCreate(mediaFiles || [], { transaction });
       await transaction.commit();
       return vendor;
     } catch (error) {

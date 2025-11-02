@@ -11,10 +11,10 @@ const orgSchema = Joi.object({
   categories: Joi.array().items(Joi.string()).optional(),
   phone: Joi.string().optional(),
   images: Joi.array().items(Joi.alternatives().try(Joi.string(), Joi.object())).optional(),
-  pricing_packages: Joi.string().optional(),
+  pricing_packages: Joi.array().items(Joi.object()).optional(),
   services: Joi.alternatives().try(
       Joi.string(),
-      Joi.array().items(Joi.alternatives().try(Joi.string(), Joi.object()))
+      Joi.array().items(Joi.string())
   ).optional()
 });
 
@@ -22,7 +22,8 @@ exports.createVendorProfile = (req, res, next) => {
   const { error } = orgSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
   req.body.user_id = req.user.id;
-  req.body.services = req.body.services ? req.body.services.split(',').map(service => service.trim()) : [];
+  const services = req.body.services;
+  req.body.services = services && services.length > 0 ? services : [];
   next();
 };
 

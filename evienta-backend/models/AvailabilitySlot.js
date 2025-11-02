@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const AvailabilitySlot = sequelize.define('AvailabilitySlot', {
   vendor_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID
-    allowNull: false,
-    references: { model: 'VendorProfiles', key: 'id' }
+    allowNull: false
   },
   start_datetime: {
     type: DataTypes.DATE,

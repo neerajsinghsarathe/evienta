@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const Media = sequelize.define('Media', {
   vendor_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'VendorProfiles', key: 'id' }
+    allowNull: false
   },
   url: {
     type: DataTypes.STRING,

@@ -4,8 +4,7 @@ const sequelize = require('./sequelize');
 const VendorProfile = sequelize.define('VendorProfile', {
   user_id: {
     type: DataTypes.INTEGER, // or DataTypes.UUID if using UUIDs
-    allowNull: false,
-    references: { model: 'Users', key: 'id' }
+    allowNull: false
   },
   business_name: {
     type: DataTypes.STRING,
